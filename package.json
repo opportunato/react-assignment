@@ -2,7 +2,8 @@
   "name": "react-assignment",
   "version": "0.1.0",
   "description": "Simple CRUD using React and Flux ideology",
-  "main": "js/app.js",
+  "repository": "https://github.com/opportunato/react-assignment",
+  "main": "js/app.jsx",
   "dependencies": {
     "flux": "^2.0.0",
     "react": "~0.11.0"
