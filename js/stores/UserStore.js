@@ -38,11 +38,13 @@ function create(values) {
 
   _users[id] = {
     id: id,
-    firstName: values["firstName"],
-    secondName: values["secondName"],
-    email: values["email"],
-    phone: values["phone"]
+    firstName: values.firstName,
+    lastName: values.lastName,
+    email: values.email,
+    phone: values.phone
   };
+
+  saveData();
 }
 
 /**
@@ -90,6 +92,10 @@ AppDispatcher.register(function(payload) {
 
     case UserConstants.USER_DESTROY:
       destroy(action.id);
+      break;
+
+    case UserConstants.USER_CREATE:
+      create(action.values);
       break;
 
     default:

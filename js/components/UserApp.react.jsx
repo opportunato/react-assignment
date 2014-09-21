@@ -5,7 +5,8 @@
 
 var React = require('react');
 var UserStore = require('../stores/UserStore');
-var Table = require('./Table.react.jsx')
+var Table = require('./Table.react.jsx');
+var EditPanel = require('./EditPanel.react.jsx')
 
 /**
  * Retrieve the current data from the UserStore
@@ -36,6 +37,7 @@ var UserApp = React.createClass({
   render: function() {
     return (
       <div>
+        <EditPanel />
         <Table data={this.state.users} />
       </div>
     );

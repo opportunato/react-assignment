@@ -11,6 +11,16 @@ var UserActions = {
       actionType: UserConstants.USER_DESTROY,
       id: id
     });
+  },
+
+  /**
+   * @param  {object} values
+   */
+  create: function(values) {
+    AppDispatcher.handleViewAction({
+      actionType: UserConstants.USER_CREATE,
+      values: values
+    });
   }
 
 };
