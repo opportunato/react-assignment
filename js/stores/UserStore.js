@@ -10,6 +10,9 @@ var CHANGE_EVENT = 'change';
 
 var _users = {};
 
+var sortField = null;
+var sortOrder = null;
+
 function readData() {
   data = store.getItem('users');
 
@@ -75,7 +78,17 @@ var UserStore = merge(EventEmitter.prototype, {
    * @return {object}
    */
   getAll: function() {
-    return _.toArray(_users);
+    var users = _.toArray(_users);
+
+    if (sortField !== null && sortOrder !== null) {
+      users = _.sortBy(users, sortField)
+
+      if (sortOrder === UserConstants.DESC) {
+        users.reverse();
+      }
+    }
+
+    return users;
   },
 
   getUser: function(id) {
@@ -116,6 +129,16 @@ AppDispatcher.register(function(payload) {
 
     case UserConstants.USER_UPDATE:
       update(action.id, action.values);
+      break;
+
+    case UserConstants.SORT:
+      if (sortField === action.field && sortOrder === UserConstants.ASC) {
+        sortOrder = "DESC";
+      } else {
+        sortOrder = "ASC";
+      }
+
+      sortField = action.field;
       break;
 
     default:

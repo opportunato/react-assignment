@@ -3,11 +3,7 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TableRow = require('./TableRow.react.jsx');
-var UserStore = require('../stores/UserStore');
-
-function getUsers() {
-  return UserStore.getAll();
-}
+var UserActions = require('../actions/UserActions')
 
 var Table = React.createClass({
 
@@ -39,10 +35,10 @@ var Table = React.createClass({
         <table id="todo-list">
           <thead>
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Phone</th>
+              <th onClick={this.sort} data-field="firstName">First Name</th>
+              <th onClick={this.sort} data-field="lastName">Last Name</th>
+              <th onClick={this.sort} data-field="email">Email</th>
+              <th onClick={this.sort} data-field="phone">Phone</th>
               <th>Edit</th>
               <th>Destroy</th>
             </tr>
@@ -53,6 +49,10 @@ var Table = React.createClass({
         </table>
       </section>
     );
+  },
+
+  sort: function(event) {
+    UserActions.sort(event.target.dataset.field);
   }
 
 });

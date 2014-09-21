@@ -29,12 +29,22 @@ var UserActions = {
    * @param  {object} values
    */
 
-
   update: function(id, values) {
     AppDispatcher.handleViewAction({
       actionType: UserConstants.USER_UPDATE,
       id: id,
       values: values
+    });
+  },
+
+  /**
+   * @param  {string} field
+   */
+
+  sort: function(field) {
+    AppDispatcher.handleViewAction({
+      actionType: UserConstants.SORT,
+      field: field
     });
   }
 
