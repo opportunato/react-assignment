@@ -16,19 +16,25 @@ var Table = React.createClass({
     var rows = [];
 
     data.forEach(function(item) {
-      rows.push(<TableRow item={item} />);
+      rows.push(<TableRow key={item.id} item={item} />);
     });
 
     return (
       <section id="table">
         <table id="todo-list">
-        <tr>
-          <td>First Name</td>
-          <td>Last Name</td>
-          <td>Email</td>
-          <td>Phone</td>
-        </tr>
-          {rows}
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Edit</th>
+              <th>Destroy</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows}
+          </tbody>
         </table>
       </section>
     );

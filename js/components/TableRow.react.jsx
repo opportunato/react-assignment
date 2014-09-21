@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
+var UserActions = require('../actions/UserActions');
 
 var cx = require('react/lib/cx');
 
@@ -21,8 +22,14 @@ var TableRow = React.createClass({
         <td>{item.lastName}</td>
         <td>{item.email}</td>
         <td>{item.phone}</td>
+        <td><button className="edit">Edit</button></td>
+        <td><button className="destroy" onClick={this._onDestroyClick}>Destroy</button></td>
       </tr>
     );
+  },
+
+  _onDestroyClick: function() {
+    UserActions.destroy(this.props.item.id);
   }
 
 });

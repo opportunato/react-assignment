@@ -1,14 +1,16 @@
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
+var UserConstants = require('../constants/UserConstants');
 var merge = require('react/lib/merge');
+var _ = require('underscore');
 
 var store = global.localStorage;
 
 var CHANGE_EVENT = 'change';
 
-var _users = [];
+var _users = {};
 
-function getData() {
+function readData() {
   data = store.getItem('users');
 
   if (data === null) {
@@ -21,21 +23,35 @@ function getData() {
   return data;
 }
 
-_users = getData();
+function saveData() {
+  store.setItem('users', JSON.stringify(data));
+}
+
+_users = readData();
 
 /**
  * Create a user.
  * @param  {object} values The params of the User
  */
 function create(values) {
-  var id = Date.now();
-  _users.push({
-    id: values["id"],
+  var id = Date.now().toString();
+
+  _users[id] = {
+    id: id,
     firstName: values["firstName"],
     secondName: values["secondName"],
     email: values["email"],
     phone: values["phone"]
-  });
+  };
+}
+
+/**
+ * Delete a TODO item.
+ * @param  {string} id
+ */
+function destroy(id) {
+  delete _users[id];
+  saveData();
 }
 
 var UserStore = merge(EventEmitter.prototype, {
@@ -45,7 +61,7 @@ var UserStore = merge(EventEmitter.prototype, {
    * @return {object}
    */
   getAll: function() {
-    return _users;
+    return _.toArray(_users);
   },
 
   emitChange: function() {
@@ -65,6 +81,24 @@ var UserStore = merge(EventEmitter.prototype, {
   removeChangeListener: function(callback) {
     this.removeListener(CHANGE_EVENT, callback);
   }
+});
+
+AppDispatcher.register(function(payload) {
+  var action = payload.action;
+
+  switch(action.actionType) {
+
+    case UserConstants.USER_DESTROY:
+      destroy(action.id);
+      break;
+
+    default:
+      return true;
+  }
+
+  UserStore.emitChange();
+
+  return true;
 });
 
 module.exports = UserStore;
