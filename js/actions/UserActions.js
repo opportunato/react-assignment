@@ -21,6 +21,21 @@ var UserActions = {
       actionType: UserConstants.USER_CREATE,
       values: values
     });
+  },
+
+
+  /**
+   * @param  {string} id
+   * @param  {object} values
+   */
+
+
+  update: function(id, values) {
+    AppDispatcher.handleViewAction({
+      actionType: UserConstants.USER_UPDATE,
+      id: id,
+      values: values
+    });
   }
 
 };

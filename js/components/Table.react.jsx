@@ -1,11 +1,19 @@
+/** @jsx React.DOM */
+
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TableRow = require('./TableRow.react.jsx');
+var UserStore = require('../stores/UserStore');
+
+function getUsers() {
+  return UserStore.getAll();
+}
 
 var Table = React.createClass({
 
   propTypes: {
-    data: ReactPropTypes.array.isRequired
+    data: ReactPropTypes.array.isRequired,
+    selectedItemId: ReactPropTypes.string
   },
 
   /**
@@ -14,9 +22,16 @@ var Table = React.createClass({
   render: function() {
     var data = this.props.data;
     var rows = [];
+    var selectedItemId = this.props.selectedItemId;
+    var itemClass = '';
 
     data.forEach(function(item) {
-      rows.push(<TableRow key={item.id} item={item} />);
+      rows.push(
+        <TableRow 
+          className={item.id === selectedItemId ? 'selected' : ''} 
+          key={item.id}
+          item={item} />
+      );
     });
 
     return (

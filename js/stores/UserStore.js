@@ -47,6 +47,18 @@ function create(values) {
   saveData();
 }
 
+function update(id, values) {
+  _users[id] = {
+    id: id,
+    firstName: values.firstName,
+    lastName: values.lastName,
+    email: values.email,
+    phone: values.phone
+  };
+
+  saveData();
+}
+
 /**
  * Delete a TODO item.
  * @param  {string} id
@@ -64,6 +76,10 @@ var UserStore = merge(EventEmitter.prototype, {
    */
   getAll: function() {
     return _.toArray(_users);
+  },
+
+  getUser: function(id) {
+    return _users[id];
   },
 
   emitChange: function() {
@@ -96,6 +112,10 @@ AppDispatcher.register(function(payload) {
 
     case UserConstants.USER_CREATE:
       create(action.values);
+      break;
+
+    case UserConstants.USER_UPDATE:
+      update(action.id, action.values);
       break;
 
     default:

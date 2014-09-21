@@ -1,34 +1,41 @@
-/**
- * This component operates as a "Controller-View".  It listens for changes in
- * the UserStore and passes the new data to its children.
- */
+/** @jsx React.DOM */
 
 var React = require('react');
 var UserStore = require('../stores/UserStore');
+var FormStore = require('../stores/FormStore');
 var Table = require('./Table.react.jsx');
-var EditPanel = require('./EditPanel.react.jsx')
+var EditPanel = require('./EditPanel.react.jsx');
 
 /**
  * Retrieve the current data from the UserStore
  */
-function getUsersState() {
-  return {
-    users: UserStore.getAll()
-  };
+function getUsers() {
+  return UserStore.getAll();
+}
+
+function getSelectedUser() {
+  return FormStore.getSelectedUser();
 }
 
 var UserApp = React.createClass({
 
   getInitialState: function() {
-    return getUsersState();
+    var selectedUser = getSelectedUser() || {};
+
+    return {
+      users: getUsers(),
+      selectedUserId: selectedUser.id
+    };
   },
 
   componentDidMount: function() {
-    UserStore.addChangeListener(this._onChange);
+    UserStore.addChangeListener(this._onUsersChange);
+    FormStore.addChangeListener(this._onFormChange);
   },
 
   componentWillUnmount: function() {
-    UserStore.removeChangeListener(this._onChange);
+    UserStore.removeChangeListener(this._onUsersChange);
+    FormStore.addChangeListener(this._onFormChange);
   },
 
   /**
@@ -38,7 +45,7 @@ var UserApp = React.createClass({
     return (
       <div>
         <EditPanel />
-        <Table data={this.state.users} />
+        <Table data={this.state.users} selectedItemId={this.state.selectedUserId} />
       </div>
     );
   },
@@ -46,8 +53,18 @@ var UserApp = React.createClass({
   /**
    * Event handler for 'change' events coming from the UserStore
    */
-  _onChange: function() {
-    this.setState(getUsersState());
+  _onUsersChange: function() {
+    this.setState({
+      users: getUsers()
+    });
+  },
+
+  _onFormChange: function() {
+    var selectedUser = getSelectedUser() || {};
+
+    this.setState({
+      selectedUserId: selectedUser.id
+    });
   }
 
 });
