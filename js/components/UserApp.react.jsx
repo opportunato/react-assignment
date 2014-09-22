@@ -5,27 +5,22 @@ var UserStore = require('../stores/UserStore');
 var FormStore = require('../stores/FormStore');
 var Table = require('./Table.react.jsx');
 var EditPanel = require('./EditPanel.react.jsx');
+var Loader = require('./Loader.react.jsx');
 
-/**
- * Retrieve the current data from the UserStore
- */
-function getUsers() {
-  return UserStore.getAll();
-}
+function getState() {
+  var selectedUser = FormStore.getSelectedUser() || {};
 
-function getSelectedUser() {
-  return FormStore.getSelectedUser();
+  return {
+    isLoading: UserStore.isLoading(),
+    users: UserStore.getAll(),
+    selectedUserId: selectedUser.id
+  }
 }
 
 var UserApp = React.createClass({
 
   getInitialState: function() {
-    var selectedUser = getSelectedUser() || {};
-
-    return {
-      users: getUsers(),
-      selectedUserId: selectedUser.id
-    };
+    return getState();
   },
 
   componentDidMount: function() {
@@ -42,29 +37,28 @@ var UserApp = React.createClass({
    * @return {object}
    */
   render: function() {
-    return (
-      <div>
-        <EditPanel validators={this.state.validators} />
-        <Table data={this.state.users} selectedItemId={this.state.selectedUserId} />
-      </div>
-    );
+    if (!this.state.isLoading) {
+      return (
+        <div>
+          <EditPanel validators={this.state.validators} />
+          <Table data={this.state.users} selectedItemId={this.state.selectedUserId} />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Loader />
+        </div>
+      );
+    }
   },
 
-  /**
-   * Event handler for 'change' events coming from the UserStore
-   */
   _onUsersChange: function() {
-    this.setState({
-      users: getUsers()
-    });
+    this.setState(getState());
   },
 
   _onFormChange: function() {
-    var selectedUser = getSelectedUser() || {};
-
-    this.setState({
-      selectedUserId: selectedUser.id
-    });
+    this.setState(getState());
   }
 
 });

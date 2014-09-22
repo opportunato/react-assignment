@@ -9,6 +9,7 @@ var store = global.localStorage;
 var CHANGE_EVENT = 'change';
 
 var _users = {};
+var isLoading = false;
 
 var _validators = {
   firstName: {
@@ -33,6 +34,18 @@ var _validators = {
 var sortField = null;
 var sortOrder = null;
 
+function async(callback) {
+  isLoading = true;
+  var time = 500 + Math.ceil(Math.random() * 500);
+
+  setTimeout(function() {
+    isLoading = false;
+    callback();
+
+    UserStore.emit(CHANGE_EVENT)
+  }, time);
+}
+
 function readData() {
   data = store.getItem('users');
 
@@ -43,14 +56,14 @@ function readData() {
     data = JSON.parse(data);
   }
 
-  return data;
+  _users = data;
 }
 
 function saveData() {
   store.setItem('users', JSON.stringify(data));
 }
 
-_users = readData();
+async(readData);
 
 /**
  * Create a user.
@@ -67,7 +80,7 @@ function create(values) {
     phone: values.phone
   };
 
-  saveData();
+  async(saveData);
 }
 
 function update(id, values) {
@@ -79,7 +92,7 @@ function update(id, values) {
     phone: values.phone
   };
 
-  saveData();
+  async(saveData);
 }
 
 /**
@@ -88,7 +101,8 @@ function update(id, values) {
  */
 function destroy(id) {
   delete _users[id];
-  saveData();
+
+  async(saveData);
 }
 
 var UserStore = merge(EventEmitter.prototype, {
@@ -109,6 +123,10 @@ var UserStore = merge(EventEmitter.prototype, {
     }
 
     return users;
+  },
+
+  isLoading: function() {
+    return isLoading;
   },
 
   getUser: function(id) {
@@ -157,9 +175,9 @@ AppDispatcher.register(function(payload) {
 
     case UserConstants.SORT:
       if (sortField === action.field && sortOrder === UserConstants.ASC) {
-        sortOrder = "DESC";
+        sortOrder = UserConstants.DESC;
       } else {
-        sortOrder = "ASC";
+        sortOrder = UserConstants.ASC;
       }
 
       sortField = action.field;
