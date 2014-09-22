@@ -44,7 +44,7 @@ var UserApp = React.createClass({
   render: function() {
     return (
       <div>
-        <EditPanel />
+        <EditPanel validators={this.state.validators} />
         <Table data={this.state.users} selectedItemId={this.state.selectedUserId} />
       </div>
     );

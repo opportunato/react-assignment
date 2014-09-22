@@ -10,6 +10,26 @@ var CHANGE_EVENT = 'change';
 
 var _users = {};
 
+var _validators = {
+  firstName: {
+    required: true,
+    maxLength: 30
+  },
+  lastName: {
+    required: true,
+    maxLength: 30
+  },
+  email: {
+    required: true,
+    email: true,
+    maxLength: 30
+  },
+  phone: {
+    required: true,
+    maxLength: 30
+  }
+};
+
 var sortField = null;
 var sortOrder = null;
 
@@ -93,6 +113,10 @@ var UserStore = merge(EventEmitter.prototype, {
 
   getUser: function(id) {
     return _users[id];
+  },
+
+  getValidators: function() {
+    return _validators;
   },
 
   emitChange: function() {

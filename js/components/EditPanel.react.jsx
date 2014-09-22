@@ -1,5 +1,7 @@
 /** @jsx React.DOM */
 
+// TODO: Refactor Validation
+
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var UserActions = require('../actions/UserActions');
@@ -22,10 +24,9 @@ function getFormState() {
   return {
     status: getStatus(),
     id: selectedUser.id,
-    firstName: selectedUser.firstName,
-    lastName: selectedUser.lastName,
-    email: selectedUser.phone,
-    phone: selectedUser.email,
+    formData: FormStore.getFormData(),
+    isValid: FormStore.isFormValid(),
+    validationData: FormStore.getValidationData()
   };  
 }
 
@@ -34,6 +35,33 @@ var EditPanel = React.createClass({
   getInitialState: function() {
     return getFormState();
   },
+
+  fields: [
+    {
+      name: "firstName",
+      id: "user-first-name",
+      placeholder: "First Name",
+      type: "text"
+    }, 
+    {
+      name: "lastName",
+      id: "user-last-name",
+      placeholder: "Last Name",
+      type: "text"       
+    },
+    {
+      name: "email",
+      id: "user-email",
+      placeholder: "Email",
+      type: "email"
+    },
+    {
+      name: "phone",
+      id: "user-phone",
+      placeholder: "Phone",
+      type: "tel"
+    }
+  ],
 
   /**
    * @return {object}
@@ -46,36 +74,30 @@ var EditPanel = React.createClass({
     switch(this.state.status) {
       case FormConstants.EDITING:
       case FormConstants.CREATION:
+          var formFields = [];
+          var self = this;
+
+          this.fields.forEach(function(field) {
+            formFields.push(
+              (
+                <UserTextInput
+                  id={field.id}
+                  key={field.id}
+                  name={field.name}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  value={self.state.formData[field.name]}
+                  isValid={self.state.validationData[field.name].isValid}
+                  showErrors={self.state.validationData[field.name].showErrors}
+                  errorMessages={self.state.validationData[field.name].errorMessages}
+                   />
+              )
+            );
+          });
+
         form = (
           <div>
-            <UserTextInput
-              id="first-name"
-              type="text"
-              placeholder="First Name"
-              onChange={this.onFirstNameChange}
-              value={this.state.firstName}
-               />
-            <UserTextInput
-              id="last-name"
-              type="text"
-              placeholder="Last Name"
-              onChange={this.onLastNameChange}
-              value={this.state.lastName}
-               />
-            <UserTextInput
-              id="email"
-              type="email"
-              placeholder="Email"
-              onChange={this.onEmailChange}
-              value={this.state.email}
-               />
-            <UserTextInput
-              id="phone"
-              type="tel"
-              placeholder="Phone"
-              onChange={this.onPhoneChange}
-              value={this.state.phone}
-               />
+            {formFields}
           </div>
         );
         break;
@@ -127,7 +149,7 @@ var EditPanel = React.createClass({
   },
 
   componentWillUnmount: function() {
-    FormStore.addChangeListener(this._onFormChange);
+    FormStore.removeChangeListener(this._onFormChange);
   },
 
   _onFormChange: function() {
@@ -135,25 +157,23 @@ var EditPanel = React.createClass({
   },
 
   _update: function() {
-    UserActions.update(this.state.id, {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      email: this.state.email,
-      phone: this.state.phone
-    });
+    if (this.state.isValid) {
+      UserActions.update(this.state.id, this.state.formData);
 
-    FormActions.hide();    
+      FormActions.hide();
+    } else {
+      FormActions.validateAll();
+    }
   },
 
   _create: function() {
-    UserActions.create({
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      email: this.state.email,
-      phone: this.state.phone
-    });
+    if (this.state.isValid) {
+      UserActions.create(this.state.formData);
 
-    FormActions.hide();
+      FormActions.hide();
+    } else {
+      FormActions.validateAll();
+    }
   },
 
   _hide: function() {
@@ -162,32 +182,7 @@ var EditPanel = React.createClass({
 
   _openForCreation: function() {
     FormActions.openForCreation();
-  },
-
-  onFirstNameChange: function(firstName) {
-    this.setState({
-      firstName: firstName
-    });
-  },
-
-  onLastNameChange: function(lastName) {
-    this.setState({
-      lastName: lastName
-    });
-  },
-
-  onEmailChange: function(email) {
-    this.setState({
-      email: email
-    });
-  },
-
-  onPhoneChange: function(phone) {
-    this.setState({
-      phone: phone
-    });
   }
-
 });
 
 module.exports = EditPanel;

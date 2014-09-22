@@ -20,6 +20,27 @@ var FormActions = {
       actionType: FormConstants.OPEN_FOR_EDITING,
       id: id
     });
+  },
+
+  changeField: function(field, value) {
+    AppDispatcher.handleViewAction({
+      actionType: FormConstants.CHANGE_FIELD,
+      field: field,
+      value: value
+    });    
+  },
+
+  validateAll: function() {
+    AppDispatcher.handleViewAction({
+      actionType: FormConstants.VALIDATE_ALL
+    });
+  },
+
+  validateField: function(field) {
+    AppDispatcher.handleViewAction({
+      actionType: FormConstants.VALIDATE_FIELD,
+      field: field
+    });    
   }
 
 };
