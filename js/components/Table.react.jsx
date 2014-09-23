@@ -35,6 +35,11 @@ var Table = React.createClass({
       );
     });
 
+    /*
+      Как видно, код, использующийся для объявления хэдеров,
+      повторяется, и его при желании можно вынести в отдельный метод.
+    */
+
     return (
       <section id="table">
         <table id="todo-list" className="table table-hover">

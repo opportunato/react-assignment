@@ -1,5 +1,11 @@
 /** @jsx React.DOM */
 
+/*
+  Здесь я взял готовое решение из https://github.com/quickleft/react-loader,
+  избавивьшись от настройки при помощи options и добавив обработчик на componentWillUpdate.
+  Последнее пришлось сделать, потому что оригинальный модуль не очищал DOM от старых спиннеров.
+*/
+
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var Spinner = require('spin.js');

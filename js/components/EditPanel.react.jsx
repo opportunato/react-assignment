@@ -1,6 +1,11 @@
 /** @jsx React.DOM */
 
-// TODO: Refactor Validation
+/*
+  В этом классе, как я уже писал в FormStore, нужно до конца избавится от объектов конфигурации (в первую очередь от EditPanel.fields),
+  и любой связанности с FormStore и FormActions. 
+
+  После этого к нему можно будет подключать самые разные store'ы с соответствующими action'ами — мы получим базовый расширяемый компонент формы.
+*/
 
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
