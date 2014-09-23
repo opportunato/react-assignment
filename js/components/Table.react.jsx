@@ -3,13 +3,18 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var TableRow = require('./TableRow.react.jsx');
-var UserActions = require('../actions/UserActions')
+var UserActions = require('../actions/UserActions');
+var UserConstants = require('../constants/UserConstants');
+
+var cx = require('react/lib/cx');
 
 var Table = React.createClass({
 
   propTypes: {
     data: ReactPropTypes.array.isRequired,
-    selectedItemId: ReactPropTypes.string
+    selectedItemId: ReactPropTypes.string,
+    sortField: ReactPropTypes.string,
+    sortOrder: ReactPropTypes.string
   },
 
   /**
@@ -24,7 +29,7 @@ var Table = React.createClass({
     data.forEach(function(item) {
       rows.push(
         <TableRow 
-          className={item.id === selectedItemId ? 'selected' : ''} 
+          className={item.id === selectedItemId ? 'active' : ''} 
           key={item.id}
           item={item} />
       );
@@ -32,13 +37,41 @@ var Table = React.createClass({
 
     return (
       <section id="table">
-        <table id="todo-list">
+        <table id="todo-list" className="table table-hover">
           <thead>
             <tr>
-              <th onClick={this.sort} data-field="firstName">First Name</th>
-              <th onClick={this.sort} data-field="lastName">Last Name</th>
-              <th onClick={this.sort} data-field="email">Email</th>
-              <th onClick={this.sort} data-field="phone">Phone</th>
+              <th 
+                onClick={this.sort}
+                className={cx({
+                  'sortable': true,
+                  'sortedDesc': this._sortedDesc("firstName"),
+                  'sortedAsc': this._sortedAsc("firstName")
+                })}
+                data-field="firstName">First Name</th>
+              <th
+                onClick={this.sort}
+                className={cx({
+                  'sortable': true,
+                  'sortedDesc': this._sortedDesc("lastName"),
+                  'sortedAsc': this._sortedAsc("lastName")
+                })}
+                data-field="lastName">Last Name</th>
+              <th
+                onClick={this.sort}
+                className={cx({
+                  'sortable': true,
+                  'sortedDesc': this._sortedDesc("email"),
+                  'sortedAsc': this._sortedAsc("email")
+                })}
+                data-field="email">Email</th>
+              <th
+                onClick={this.sort}
+                className={cx({
+                  'sortable': true,
+                  'sortedDesc': this._sortedDesc("phone"),
+                  'sortedAsc': this._sortedAsc("phone")
+                })}
+                data-field="phone">Phone</th>
               <th>Edit</th>
               <th>Destroy</th>
             </tr>
@@ -53,6 +86,14 @@ var Table = React.createClass({
 
   sort: function(event) {
     UserActions.sort(event.target.dataset.field);
+  },
+
+  _sortedDesc: function(field) {
+    return this.props.sortField === field && this.props.sortOrder === UserConstants.DESC;
+  },
+
+  _sortedAsc: function(field) {
+    return this.props.sortField === field && this.props.sortOrder === UserConstants.ASC;
   }
 
 });

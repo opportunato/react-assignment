@@ -10,6 +10,7 @@ var CHANGE_EVENT = 'change';
 
 var _users = {};
 var isLoading = false;
+var isSaving = false;
 
 var _validators = {
   firstName: {
@@ -35,15 +36,33 @@ var sortField = null;
 var sortOrder = null;
 
 function async(callback) {
-  isLoading = true;
   var time = 500 + Math.ceil(Math.random() * 500);
 
   setTimeout(function() {
-    isLoading = false;
     callback();
 
-    UserStore.emit(CHANGE_EVENT)
-  }, time);
+    AppDispatcher.handleRequestAction({
+      actionType: UserConstants.LOADED
+    });
+  }, time);  
+}
+
+function async_load(callback) {
+  isLoading = true;
+  
+  async(function() {
+    callback();
+    isLoading = false;
+  });
+}
+
+function async_save(callback) {
+  isSaving = true;
+  
+  async(function() {
+    callback();
+    isSaving = false;
+  });
 }
 
 function readData() {
@@ -60,10 +79,10 @@ function readData() {
 }
 
 function saveData() {
-  store.setItem('users', JSON.stringify(data));
+  store.setItem('users', JSON.stringify(_users));
 }
 
-async(readData);
+async_load(readData);
 
 /**
  * Create a user.
@@ -80,7 +99,7 @@ function create(values) {
     phone: values.phone
   };
 
-  async(saveData);
+  async_save(saveData);
 }
 
 function update(id, values) {
@@ -92,7 +111,7 @@ function update(id, values) {
     phone: values.phone
   };
 
-  async(saveData);
+  async_save(saveData);
 }
 
 /**
@@ -102,7 +121,7 @@ function update(id, values) {
 function destroy(id) {
   delete _users[id];
 
-  async(saveData);
+  async_save(saveData);
 }
 
 var UserStore = merge(EventEmitter.prototype, {
@@ -127,6 +146,18 @@ var UserStore = merge(EventEmitter.prototype, {
 
   isLoading: function() {
     return isLoading;
+  },
+
+  isSaving: function() {
+    return isSaving;
+  },
+
+  getSortField: function() {
+    return sortField;
+  },
+
+  getSortOrder: function() {
+    return sortOrder;
   },
 
   getUser: function(id) {
@@ -181,6 +212,9 @@ AppDispatcher.register(function(payload) {
       }
 
       sortField = action.field;
+      break;
+
+    case UserConstants.LOADED:
       break;
 
     default:

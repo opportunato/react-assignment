@@ -12,7 +12,10 @@ function getState() {
 
   return {
     isLoading: UserStore.isLoading(),
+    isSaving: UserStore.isSaving(),
     users: UserStore.getAll(),
+    sortField: UserStore.getSortField(),
+    sortOrder: UserStore.getSortOrder(),
     selectedUserId: selectedUser.id
   }
 }
@@ -37,20 +40,22 @@ var UserApp = React.createClass({
    * @return {object}
    */
   render: function() {
-    if (!this.state.isLoading) {
-      return (
-        <div>
+    return (
+      <div id="main">
+        <Loader isLoading={this.state.isLoading}>
           <EditPanel validators={this.state.validators} />
-          <Table data={this.state.users} selectedItemId={this.state.selectedUserId} />
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Loader />
-        </div>
-      );
-    }
+          <div className="save-loader">
+            <Loader className="save-loader" isLoading={this.state.isSaving}/>
+          </div>
+          <Table
+            data={this.state.users}
+            selectedItemId={this.state.selectedUserId}
+            sortField={this.state.sortField}
+            sortOrder={this.state.sortOrder}
+          />
+        </Loader>
+      </div>
+    );
   },
 
   _onUsersChange: function() {

@@ -96,7 +96,7 @@ var EditPanel = React.createClass({
           });
 
         form = (
-          <div>
+          <div className="edit-form">
             {formFields}
           </div>
         );
@@ -106,17 +106,17 @@ var EditPanel = React.createClass({
     switch(this.state.status) {
       case FormConstants.CREATION:
         button = (
-          <div>
-            <button onClick={this._create}>Create</button>
-            <button onClick={this._hide}>Cancel</button>
+          <div className="form-buttons">
+            <button className="btn btn-success" onClick={this._create}>Create</button>
+            <button className="btn btn-danger" onClick={this._hide}>Cancel</button>
           </div>
         );
         break;
       case FormConstants.EDITING:
         button = (
-          <div>
-            <button onClick={this._update}>Update</button>
-            <button onClick={this._hide}>Cancel</button>
+          <div className="form-buttons">
+            <button className="btn btn-success" onClick={this._update}>Update</button>
+            <button className="btn btn-danger" onClick={this._hide}>Cancel</button>
           </div>
         );
         break;
@@ -126,13 +126,13 @@ var EditPanel = React.createClass({
       case FormConstants.HIDDEN:
       case FormConstants.EDITING:
         createButton = (
-          <button onClick={this._openForCreation}>Create New User</button>
+          <button className="btn btn-primary" onClick={this._openForCreation}>Create New User</button>
         );
         break;
     };
 
     return (
-      <div>
+      <div className="edit-panel">
         <div>
           {createButton}
         </div>

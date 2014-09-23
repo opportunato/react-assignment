@@ -8,7 +8,7 @@
     "flux": "^2.0.0",
     "react": "~0.11.0",
     "underscore": "~1.7.0",
-    "react-spinner": "~0.1.9"
+    "spin.js": "~2.0.1"
   },
   "devDependencies": {
     "browserify": "~4.2.2",

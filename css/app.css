@@ -1,9 +1,43 @@
-.selected {
-  color: red;
+.loader {
+  height: 50px;
+  width: 50px;
 }
 
-.error {
+#main {
   border-color: red;
+  margin: 40px;
+  position: relative;
+  width: 800px;
+}
+
+.save-loader {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.edit-form {
+  width: 400px;
+}
+
+th.sortable {
+  cursor: pointer;
+}
+
+th.sortedAsc:after {
+  content: '▲';
+}
+
+th.sortedDesc:after {
+  content: '▼';
+}
+
+.edit-panel {
+  margin-bottom: 30px;
+}
+
+.form-buttons .btn {
+  margin-right: 10px;
 }
 
 .error-message {

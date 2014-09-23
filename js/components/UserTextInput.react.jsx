@@ -5,6 +5,8 @@ var ReactPropTypes = React.PropTypes;
 var FormStore = require('../stores/FormStore');
 var FormActions = require('../actions/FormActions');
 
+var cx = require('react/lib/cx');
+
 var UserTextInput = React.createClass({
 
   propTypes: {
@@ -43,16 +45,19 @@ var UserTextInput = React.createClass({
 
       if (errorMessages.length > 0) {
         errorMessages = (
-          <span className="error-message">{errorMessages.join('')}</span>
+          <span className="error-message">{errorMessages[0]}</span>
         );
       }
     }
 
     return (
-      <div>
+      <div className={cx({
+          'has-error': !this.props.isValid && this.props.showErrors,
+          'form-group': true
+        })}>
         <input
           id={this.props.id}
-          className={!this.props.isValid && this.props.showErrors ? 'error' : ''}
+          className='form-control'
           placeholder={this.props.placeholder}
           value={this.props.value}
           onChange={this._onChange}
